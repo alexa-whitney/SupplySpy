@@ -6,6 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// InventoryItem defines the structure for an inventory item
+type InventoryItem struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Quantity    int    `json:"quantity"`
+}
+
 func main() {
 	router := gin.Default()
 
