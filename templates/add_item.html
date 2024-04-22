@@ -1,0 +1,28 @@
+{{ define "add_item.html" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="page-container">
+        <div id="content-wrap">
+            <div class="container">
+                <h1>{{ .title }}</h1>
+                <form id="addItemForm">
+                    ID: <input type="text" name="id" id="id"><br>
+                    Name: <input type="text" name="name" id="name"><br>
+                    Description: <input type="text" name="description" id="description"><br>
+                    Quantity: <input type="number" name="quantity" id="quantity"><br>
+                    <input type="button" value="Add Item" onclick="addItem()">
+                </form>
+            </div>
+        </div>
+        {{ template "footer.html" . }}
+</body>
+</html>
+{{ end }}

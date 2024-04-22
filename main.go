@@ -20,7 +20,7 @@ type InventoryItem struct {
 // inventory is a slice of InventoryItem
 var inventory []InventoryItem
 
-// func loadInventory loads the inventory from a JSON file
+// loadInventory loads the inventory from a JSON file
 func loadInventory() {
 	data, err := os.ReadFile("inventory.json")
 	if err != nil {
@@ -47,6 +47,9 @@ func saveInventory() {
 func main() {
 	router := gin.Default()
 
+	// Serve static files like CSS, JavaScript, or images
+	router.Static("/static", "./static")
+
 	// Load existing inventory, if any
 	loadInventory()
 
@@ -55,12 +58,22 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"message": "Welcome to SupplySpy!"})
 	})
 
-	// Route to list all items
+	// Route to list all items with a template
 	router.GET("/inventory", func(c *gin.Context) {
-		c.JSON(http.StatusOK, inventory)
+		c.HTML(http.StatusOK, "inventory.html", gin.H{
+			"Inventory": inventory,
+			"title":     "Inventory List",
+		})
 	})
 
-	// Route to add an item
+	// Route to serve the add item form with template
+	router.GET("/add-item", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "add_item.html", gin.H{
+			"title": "Add New Inventory Item",
+		})
+	})
+
+	// Route to add an item via POST request from the form
 	router.POST("/inventory", func(c *gin.Context) {
 		var newItem InventoryItem
 		if err := c.ShouldBindJSON(&newItem); err != nil {
@@ -68,10 +81,13 @@ func main() {
 			return
 		}
 		inventory = append(inventory, newItem)
-		// Save the new inventory list with the new item
+		// Save the new inventory list with the added item
 		saveInventory()
-		c.JSON(http.StatusOK, newItem)
+		c.Redirect(http.StatusFound, "/inventory")
 	})
+
+	// Load HTML files from the templates directory
+	router.LoadHTMLGlob("templates/*")
 
 	// Start the server on port 8080
 	router.Run(":8080")

@@ -1,0 +1,37 @@
+{{ define "inventory.html" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory List</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="page-container">
+        <div id="content-wrap">
+            <div class="container">
+                <h1>Inventory List</h1>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                    </tr>
+                    {{ range .Inventory }}
+                    <tr>
+                        <td>{{ .ID }}</td>
+                        <td>{{ .Name }}</td>
+                        <td>{{ .Description }}</td>
+                        <td>{{ .Quantity }}</td>
+                    </tr>
+                    {{ end }}
+                </table>
+            </div>
+        </div>
+        {{ template "footer.html" . }}
+    </div>
+</body>
+</html>
+{{ end }}

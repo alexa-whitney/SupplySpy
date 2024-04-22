@@ -1,0 +1,157 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f4f7;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 2rem auto;
+    overflow: hidden;
+    padding: 0 2rem;
+}
+
+header {
+    background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+    color: #fff;
+    padding: 1rem 0;
+    border-bottom: #f8f9fa 3px solid;
+}
+
+header a, header a:visited {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+header li {
+    display: inline;
+    padding: 0 20px;
+}
+
+header #branding {
+    float: left;
+}
+
+header #branding h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+
+header .highlight, header .current a {
+    font-weight: bold;
+}
+
+header a:hover {
+    color: #cef8ff;
+}
+
+h1 {
+    margin-bottom: 1rem;
+    color: #3056D3;
+}
+
+/* Button */
+button, input[type='submit'], input[type='button'] {
+    display: inline-block;
+    background: #30CFD0;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    margin: 0.5rem 0;
+    text-decoration: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 2rem;
+    transition: background 0.3s ease;
+}
+
+button:hover, input[type='submit']:hover, input[type='button']:hover {
+    background: #330867;
+}
+
+/* Inventory Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table thead th {
+    background-color: #330867;
+    color: #ffffff;
+    padding: 1rem;
+    text-align: left;
+}
+
+table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+table tbody tr:last-of-type {
+    border-bottom: 2px solid #330867;
+}
+
+table tbody td {
+    padding: 1rem;
+    text-align: left;
+}
+
+/* Forms */
+form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+form input[type='text'], form input[type='number'] {
+    width: calc(100% - 2rem);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Sticky footer styles */
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#content-wrap {
+    flex: 1;
+}
+
+/* Footer */
+footer {
+    background: #3056D3;
+    color: white;
+    text-align: center;
+    padding: 0.5rem 0; 
+    position: relative;
+    width: 100%;
+    clear: both;
+}
