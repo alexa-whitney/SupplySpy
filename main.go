@@ -77,15 +77,72 @@ func main() {
 
 	// Route to add an item via POST request from the form
 	router.POST("/inventory", func(c *gin.Context) {
+		// Bind the JSON data to the InventoryItem struct
 		var newItem InventoryItem
 		if err := c.ShouldBindJSON(&newItem); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		// Check if item with the same ID already exists
+		for _, item := range inventory {
+			// If item with the same ID already exists, return an error
+			if item.ID == newItem.ID {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Item with this ID already exists"})
+				return
+			}
+		}
+
+		// Append the new item to the inventory
 		inventory = append(inventory, newItem)
-		// Save the new inventory list with the added item
+		// Save the inventory to a JSON file
 		saveInventory()
-		c.Redirect(http.StatusFound, "/inventory")
+		// Return the new item as JSON
+		c.JSON(http.StatusOK, newItem)
+	})
+
+	// Route to get a single item by ID
+	router.PUT("/inventory/:id", func(c *gin.Context) {
+		// Get the ID from the URL
+		id := c.Param("id")
+		// Bind the JSON data to the InventoryItem struct
+		var updatedItem InventoryItem
+		if err := c.ShouldBindJSON(&updatedItem); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Find and update the item
+		for i, item := range inventory {
+			// If item with the same ID already exists, return an error
+			if item.ID == id {
+				// Update the item
+				inventory[i] = updatedItem
+				saveInventory()
+				c.JSON(http.StatusOK, updatedItem)
+				return
+			}
+		}
+
+		// If item with the ID was not found, return an error
+		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
+	})
+
+	// Route to delete an item by ID
+	router.DELETE("/inventory/:id", func(c *gin.Context) {
+		id := c.Param("id")
+
+		// Find and delete the item
+		for i, item := range inventory {
+			if item.ID == id {
+				inventory = append(inventory[:i], inventory[i+1:]...)
+				saveInventory()
+				c.Status(http.StatusOK)
+				return
+			}
+		}
+
+		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
 	})
 
 	// Load HTML files from the templates directory

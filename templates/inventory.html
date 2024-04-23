@@ -13,20 +13,29 @@
             <div class="container">
                 <h1>Inventory List</h1>
                 <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                    </tr>
-                    {{ range .Inventory }}
-                    <tr>
-                        <td>{{ .ID }}</td>
-                        <td>{{ .Name }}</td>
-                        <td>{{ .Description }}</td>
-                        <td>{{ .Quantity }}</td>
-                    </tr>
-                    {{ end }}
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Inventory }}
+                        <tr id="item-{{ .ID }}">
+                            <td>{{ .ID }}</td>
+                            <td>{{ .Name }}</td>
+                            <td>{{ .Description }}</td>
+                            <td>{{ .Quantity }}</td>
+                            <td>
+                                <button onclick="deleteItem('{{ .ID }}')">Delete</button>
+                                <button onclick="editItem('{{ .ID }}')">Edit</button>
+                            </td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
                 </table>
             </div>
         </div>
