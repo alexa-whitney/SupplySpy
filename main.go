@@ -45,129 +45,92 @@ func saveInventory() {
 }
 
 func main() {
+	router := setupRouter()
+	router.Run(":8080") // Start the server on port 8080
+}
+
+// setupRouter initializes and returns a new gin router with all the configured routes.
+func setupRouter() *gin.Engine {
 	router := gin.Default()
-
-	// Serve static files like CSS, JavaScript, or images
 	router.Static("/static", "./static")
+	loadInventory() // Load inventory on router setup
 
-	// Load existing inventory, if any
-	loadInventory()
+	// Define routes
 
-	// Route for home page
+	// Home route
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "home.html", gin.H{
-			"title": "Welcome to Awesome New Startup, Inc.",
-		})
+		c.HTML(http.StatusOK, "home.html", gin.H{"title": "Welcome to Awesome New Startup, Inc."})
 	})
 
-	// Route to list all items with a template
+	// Inventory route
 	router.GET("/inventory", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "inventory.html", gin.H{
-			"Inventory": inventory,
-			"title":     "Inventory List",
-		})
+		c.HTML(http.StatusOK, "inventory.html", gin.H{"Inventory": inventory, "title": "Inventory List"})
 	})
 
-	// Route to serve the add item form with template
+	// Add item route
 	router.GET("/add-item", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "add_item.html", gin.H{
-			"title": "Add New Inventory Item",
-		})
+		c.HTML(http.StatusOK, "add_item.html", gin.H{"title": "Add New Inventory Item"})
 	})
 
-	// Route to add an item via POST request from the form
-	router.POST("/inventory", func(c *gin.Context) {
-		// Bind the JSON data to the InventoryItem struct
-		var newItem InventoryItem
-		if err := c.ShouldBindJSON(&newItem); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+	// API routes
+	router.POST("/inventory", handleAddInventory)
+	router.PUT("/inventory/:id", handleUpdateInventory)
+	router.POST("/inventory/:id/update", handleUpdateInventory)
+	router.DELETE("/inventory/:id", handleDeleteInventory)
 
-		// Check if item with the same ID already exists
-		for _, item := range inventory {
-			// If item with the same ID already exists, return an error
-			if item.ID == newItem.ID {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Item with this ID already exists"})
-				return
-			}
-		}
-
-		// Append the new item to the inventory
-		inventory = append(inventory, newItem)
-		// Save the inventory to a JSON file
-		saveInventory()
-		// Return the new item as JSON
-		c.JSON(http.StatusOK, newItem)
-	})
-
-	// Route to get a single item by ID
-	router.PUT("/inventory/:id", func(c *gin.Context) {
-		// Get the ID from the URL
-		id := c.Param("id")
-		// Bind the JSON data to the InventoryItem struct
-		var updatedItem InventoryItem
-		if err := c.ShouldBindJSON(&updatedItem); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		// Find and update the item
-		for i, item := range inventory {
-			// If item with the same ID already exists, return an error
-			if item.ID == id {
-				// Update the item
-				inventory[i] = updatedItem
-				saveInventory()
-				c.JSON(http.StatusOK, updatedItem)
-				return
-			}
-		}
-
-		// If item with the ID was not found, return an error
-		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
-	})
-
-	// Route to update an item via PUT request from the edit form
-	router.POST("/inventory/:id/update", func(c *gin.Context) {
-		id := c.Param("id")
-		var updatedItem InventoryItem
-		if err := c.ShouldBindJSON(&updatedItem); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		// Find and update the item
-		for i, item := range inventory {
-			if item.ID == id {
-				inventory[i] = updatedItem
-				saveInventory()
-				c.Redirect(http.StatusFound, "/inventory")
-				return
-			}
-		}
-		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
-	})
-
-	// Route to delete an item by ID
-	router.DELETE("/inventory/:id", func(c *gin.Context) {
-		id := c.Param("id")
-
-		// Find and delete the item
-		for i, item := range inventory {
-			if item.ID == id {
-				inventory = append(inventory[:i], inventory[i+1:]...)
-				saveInventory()
-				c.Status(http.StatusOK)
-				return
-			}
-		}
-
-		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
-	})
-
-	// Load HTML files from the templates directory
+	// Load templates
 	router.LoadHTMLGlob("templates/*")
+	// Return the router
+	return router
+}
 
-	// Start the server on port 8080
-	router.Run(":8080")
+// handleAddInventory handles the POST request to add a new inventory item
+func handleAddInventory(c *gin.Context) {
+	var newItem InventoryItem
+	if err := c.ShouldBindJSON(&newItem); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	for _, item := range inventory {
+		if item.ID == newItem.ID {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Item with this ID already exists"})
+			return
+		}
+	}
+	inventory = append(inventory, newItem)
+	saveInventory()
+	c.JSON(http.StatusOK, newItem)
+}
+
+// handleUpdateInventory handles the PUT request to update an existing inventory item
+func handleUpdateInventory(c *gin.Context) {
+	id := c.Param("id")
+	var updatedItem InventoryItem
+	if err := c.ShouldBindJSON(&updatedItem); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	for i, item := range inventory {
+		if item.ID == id {
+			inventory[i] = updatedItem
+			saveInventory()
+			c.JSON(http.StatusOK, updatedItem)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
+}
+
+// handleDeleteInventory handles the DELETE request to delete an inventory item
+func handleDeleteInventory(c *gin.Context) {
+	id := c.Param("id")
+	for i, item := range inventory {
+		if item.ID == id {
+			inventory = append(inventory[:i], inventory[i+1:]...)
+			saveInventory()
+			c.Status(http.StatusOK)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
 }
