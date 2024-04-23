@@ -53,9 +53,11 @@ func main() {
 	// Load existing inventory, if any
 	loadInventory()
 
-	// Basic route for the homepage
+	// Route for home page
 	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "Welcome to SupplySpy!"})
+		c.HTML(http.StatusOK, "home.html", gin.H{
+			"title": "Welcome to Awesome New Startup, Inc.",
+		})
 	})
 
 	// Route to list all items with a template

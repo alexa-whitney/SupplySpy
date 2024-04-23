@@ -1,0 +1,30 @@
+{{ define "home.html" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Awesome New Startup, Inc.</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <!-- Navigation and branding -->
+    </header>
+    <div id="page-container">
+        <div id="content-wrap">
+            <div class="container">
+                <h1>Welcome to Awesome New Startup, Inc.</h1>
+                <p>This is our inventory management system designed to make tracking our resources easy and efficient.</p>
+                <h2>How to Use the System:</h2>
+                <ul>
+                    <li>To add a new inventory item, click <a href="/add-item">here</a>.</li>
+                    <li>To view existing inventory, click <a href="/inventory">here</a>.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {{ template "footer.html" . }}
+</body>
+</html>
+{{ end }}
