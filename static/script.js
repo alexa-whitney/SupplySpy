@@ -66,14 +66,24 @@ function deleteItem(id) {
     });
 }
 
+function enableEdit(id) {
+    // Change the text fields to editable input fields
+    document.getElementById('name-' + id).innerHTML = '<input type="text" id="edit-name-' + id + '" value="' + document.getElementById('name-' + id).innerText + '">';
+    document.getElementById('description-' + id).innerHTML = '<input type="text" id="edit-description-' + id + '" value="' + document.getElementById('description-' + id).innerText + '">';
+    document.getElementById('quantity-' + id).innerHTML = '<input type="number" id="edit-quantity-' + id + '" value="' + document.getElementById('quantity-' + id).innerText + '">';
+    // Change the "Edit" button to a "Save" button
+    document.querySelector(`#item-${id} button[onclick^='enableEdit']`).outerHTML = '<button onclick="updateItem(\'' + id + '\')">Save</button>';
+}
+
 function updateItem(id) {
-    // Get form data
-    var name = document.getElementById('name').value;
-    var description = document.getElementById('description').value;
-    var quantity = document.getElementById('quantity').value;
+    // Get form data from inputs specific to the item we want to update
+    var name = document.getElementById('edit-name-' + id).value;
+    var description = document.getElementById('edit-description-' + id).value;
+    var quantity = document.getElementById('edit-quantity-' + id).value;
     
     // Create JSON payload
     var data = JSON.stringify({
+        id: id,
         name: name,
         description: description,
         quantity: parseInt(quantity, 10)  // Ensure quantity is sent as a number
@@ -93,8 +103,8 @@ function updateItem(id) {
         throw new Error('Network response was not ok.');
     }).then(data => {
         console.log(data);
-        // Redirect to the inventory page to see the updated item
-        window.location.href = '/inventory';
+        // Optionally refresh the page or update the table row directly
+        location.reload();  // Simplistic approach to see the changes
     }).catch(error => {
         console.error('Error:', error);
     });

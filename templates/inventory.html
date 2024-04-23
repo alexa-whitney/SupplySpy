@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Inventory List</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <script src="/static/script.js"></script>
 </head>
 <body>
     <div id="page-container">
@@ -26,12 +26,12 @@
                         {{ range .Inventory }}
                         <tr id="item-{{ .ID }}">
                             <td>{{ .ID }}</td>
-                            <td>{{ .Name }}</td>
-                            <td>{{ .Description }}</td>
-                            <td>{{ .Quantity }}</td>
+                            <td id="name-{{ .ID }}">{{ .Name }}</td>
+                            <td id="description-{{ .ID }}">{{ .Description }}</td>
+                            <td id="quantity-{{ .ID }}">{{ .Quantity }}</td>
                             <td>
+                                <button onclick="enableEdit('{{ .ID }}')">Edit</button>
                                 <button onclick="deleteItem('{{ .ID }}')">Delete</button>
-                                <button onclick="editItem('{{ .ID }}')">Edit</button>
                             </td>
                         </tr>
                         {{ end }}
@@ -45,3 +45,4 @@
 </body>
 </html>
 {{ end }}
+

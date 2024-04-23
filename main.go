@@ -128,6 +128,26 @@ func main() {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
 	})
 
+	// Route to update an item via PUT request from the edit form
+	router.POST("/inventory/:id/update", func(c *gin.Context) {
+		id := c.Param("id")
+		var updatedItem InventoryItem
+		if err := c.ShouldBindJSON(&updatedItem); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// Find and update the item
+		for i, item := range inventory {
+			if item.ID == id {
+				inventory[i] = updatedItem
+				saveInventory()
+				c.Redirect(http.StatusFound, "/inventory")
+				return
+			}
+		}
+		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
+	})
+
 	// Route to delete an item by ID
 	router.DELETE("/inventory/:id", func(c *gin.Context) {
 		id := c.Param("id")
