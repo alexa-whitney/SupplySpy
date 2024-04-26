@@ -1,0 +1,1 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/alexa-whitney/SupplySpy)](https://goreportcard.com/report/github.com/alexa-whitney/SupplySpy)
